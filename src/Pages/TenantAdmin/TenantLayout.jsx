@@ -6,6 +6,8 @@ import { getAIAssistantNavItems } from "../../features/aiAssistant/nav";
 import logo from "../../assets/evault-logo-light.png";
 import { Settings2, PlugZap ,Building2 } from "lucide-react";
 import { API_BASE_URL } from "../../services/apiClient";
+import { useTenantModules } from "../../context/TenantModuleContext";
+import { filterNavigationItems } from "../../utils/tenantModuleMapping";
 const ICONS = {
   inbox: (
     <svg
@@ -900,6 +902,7 @@ function NavSection({
 }
 
 function Sidebar({
+
   activePage,
   onNavigate,
   onLogout,
@@ -907,6 +910,12 @@ function Sidebar({
   onMobileClose,
   user,
 }) {
+  const { isModuleVisible } = useTenantModules();
+  const visibleNAV_SAP_SYNC = filterNavigationItems(NAV_SAP_SYNC, isModuleVisible);
+  const visibleNAV_DOCS = filterNavigationItems(NAV_DOCS, isModuleVisible);
+  const visibleNAV_APPROVALS = filterNavigationItems(NAV_APPROVALS, isModuleVisible);
+  const visibleNAV_AI = filterNavigationItems(NAV_AI, isModuleVisible);
+
   const [openSections, setOpenSections] = useState({
     admin: false,
     docs: false,
@@ -994,10 +1003,10 @@ function Sidebar({
 
         {/* Nav */}
         {/* Nav */}
-        <div className="flex-1 overflow-y-auto py-3 space-y-[2px] text-[13px]">          <NavSection
+        <div className="flex-1 overflow-y-auto py-3 space-y-[2px] text-[13px]">          {visibleNAV_SAP_SYNC.length > 0 && <NavSection
             title="Erp Configuration"
             icon="erpConfiguration"
-            items={NAV_SAP_SYNC}
+            items={visibleNAV_SAP_SYNC}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
@@ -1009,7 +1018,7 @@ function Sidebar({
                 ? setErpModalOpen(true)
                 : setUpgradeModalOpen(true)
             }
-          />
+          />}
 
           <div className="mt-2 mb-1 border-t border-white/[0.06]" />
 
@@ -1032,51 +1041,57 @@ function Sidebar({
             onToggle={() => toggleSection("admin")}
           />
 
-          <NavSection
+          {visibleNAV_DOCS.length > 0 && <NavSection
             title="Document Config"
             icon="docs"
-            items={NAV_DOCS}
+            items={visibleNAV_DOCS}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
             isOpen={openSections.docs}
             onToggle={() => toggleSection("docs")}
-          />
-          <NavSection
+          />}
+          {visibleNAV_APPROVALS.length > 0 && <NavSection
             title="Approvals"
             icon="workflowAssign"
-            items={NAV_APPROVALS}
+            items={visibleNAV_APPROVALS}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
             isOpen={openSections.approvals}
             onToggle={() => toggleSection("approvals")}
-          />
+          />}
 
           <div className="mt-2 mb-1 border-t border-white/[0.06]" />
 
+          {isModuleVisible("approval_engine") && (
           <StandaloneNavSection
             item={NAV_INBOX[0]}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
           />
+          )}
+          {isModuleVisible("cross_department") && (
           <StandaloneNavSection
             item={NAV_CROSS_DEPARTMENT[0]}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
           />
+          )}
+          {isModuleVisible("audit") && (
           <StandaloneNavSection
             item={NAV_REPORTS[0]}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
           />
-          <NavSection
+          )}
+          {visibleNAV_AI.length > 0 && <NavSection
             title="AI Assistant"
             icon="aiAssistant"
-            items={NAV_AI}
+            items={visibleNAV_AI}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
@@ -1084,13 +1099,15 @@ function Sidebar({
             onToggle={() => toggleSection("ai")}
             lockAll={isFree}
             onLockedClick={() => setUpgradeModalOpen(true)}
-          />
+          />}
+          {isModuleVisible("communication") && (
           <StandaloneNavSection
             item={NAV_COMMUNICATION[0]}
             activePage={activePage}
             onNavigate={onNavigate}
             onMobileClose={onMobileClose}
           />
+          )}
         </div>
 
         {/* Logout */}

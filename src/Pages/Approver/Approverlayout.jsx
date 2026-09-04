@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useTheme } from "../SuperAdmin/Superadmincontext";
 import { getAIAssistantNavItems } from "../../features/aiAssistant/nav";
 import { ApprovalActionApi } from "../../features/approvalEngine/api";
+import { useTenantModules } from "../../context/TenantModuleContext";
+import { filterNavigationItems } from "../../utils/tenantModuleMapping";
 
 
 const ICONS = {
@@ -53,7 +55,12 @@ function NavItem({ item, active, onClick, badge }) {
   );
 }
 
-function Sidebar({ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, user, pendingApprovalsCount }) {
+function Sidebar({
+ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, user, pendingApprovalsCount }) {
+  const { isModuleVisible } = useTenantModules();
+  const visible_NAV_ITEMS = filterNavigationItems(NAV_ITEMS, isModuleVisible);
+  const visible_NAV_AI = filterNavigationItems(NAV_AI, isModuleVisible);
+
   return (
     <>
       {mobileOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={onMobileClose} />}
@@ -89,7 +96,7 @@ function Sidebar({ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, 
         {/* Nav */}
         <div className="flex-1 overflow-y-auto py-2">
           <div className="px-[14px] py-[6px] text-[9px] font-bold text-white/30 uppercase tracking-[0.8px]">Main</div>
-          {NAV_ITEMS.map((item) => (
+          {visible_NAV_ITEMS.map((item) => (
             <NavItem
               key={item.key}
               item={item}
@@ -99,7 +106,7 @@ function Sidebar({ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, 
             />
           ))}
           <div className="px-[14px] pt-3 pb-[6px] text-[9px] font-bold text-white/30 uppercase tracking-[0.8px]">AI Assistant</div>
-          {NAV_AI.map(item => (
+          {visible_NAV_AI.map(item => (
             <NavItem key={item.key} item={item} active={activePage === item.key} badge={item.badge} onClick={() => { onNavigate(item.key); onMobileClose?.(); }} />
           ))}
         </div>

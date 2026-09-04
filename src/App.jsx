@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "./Pages/Login/Login";
 import RegisterFree from "./Pages/Login/RegisterFree";
 import LoginFree from "./Pages/Login/LoginFree";
 import { ThemeProvider } from "./Pages/SuperAdmin/Superadmincontext";
 import { MetadataProvider, useTenantCapabilities } from "./context/MetadataContext";
 import { SubscriptionProvider , useSubscription } from "./context/SubscriptionContext";
+import { TenantModuleProvider, useTenantModules } from "./context/TenantModuleContext";
+import { getModuleForPage } from "./utils/tenantModuleMapping";
 import LandingRouter from "../src/Pages/Home/LandingRouter";
 import { AIAssistantProvider } from "./features/aiAssistant/AIAssistantContext";
 import { buildAIAssistantPages, AI_PAGE_TITLES } from "./features/aiAssistant/nav";
@@ -29,6 +31,8 @@ import Billing from "./Pages/SuperAdmin/Billing";
 import DepartmentsPage from "./Pages/SuperAdmin/Departmentspage";
 import SACompanyCodes from "./Pages/SuperAdmin/CompanyCodes";
 import SAPlants from "./Pages/SuperAdmin/Plants";
+import ModuleManagement from "./Pages/SuperAdmin/ModuleManagement";
+import TenantModules from "./Pages/SuperAdmin/TenantModules";
 
 // TenantAdmin
 import { TenantLayout } from "./Pages/TenantAdmin/TenantLayout";
@@ -125,6 +129,8 @@ const SUPER_ADMIN_PAGES = {
   departments: (nav) => <DepartmentsPage onNavigate={nav} />,
   companyCodes: (nav) => <SACompanyCodes onNavigate={nav} />,
   plants: (nav) => <SAPlants onNavigate={nav} />,
+  moduleManagement: (nav) => <ModuleManagement onNavigate={nav} />,
+  tenantModules: (nav) => <TenantModules onNavigate={nav} />,
   subscriptions: () => <SubscriptionsAdmin />,
   plans: () => <PlanCatalog />,
   ...buildAIAssistantPages("SuperAdmin"),
@@ -258,6 +264,8 @@ const PAGE_TITLES = {
   departments: "Department Master",
   subscriptions: "Subscriptions",
   plans: "Plan Catalog",
+  moduleManagement: "Module Management",
+  tenantModules: "Tenant Modules",
   newdoc: "New Document",
   folders: "Folders",
   auditlog: "Full Audit Log",
@@ -425,6 +433,22 @@ const doLogout = (setUser) => {
 };
 
 // ─────────────────────────────────────────────
+// Tenant module entitlement guard. The existing page maps and role checks
+// remain unchanged; this only adds the tenant-level availability layer.
+function TenantModuleRouteGuard({ activePage, setActivePage, children }) {
+  const { status, hasModule } = useTenantModules();
+  const moduleKey = getModuleForPage(activePage);
+
+  useEffect(() => {
+    if (status === "ready" && moduleKey && !hasModule(moduleKey)) {
+      setActivePage("dashboard");
+    }
+  }, [status, moduleKey, hasModule, setActivePage]);
+
+  if (status === "ready" && moduleKey && !hasModule(moduleKey)) return null;
+  return children;
+}
+
 // MAIN APP
 // ─────────────────────────────────────────────
 
@@ -527,8 +551,10 @@ if (showLanding && !user) {
   return (
     <SubscriptionProvider>
     <MetadataProvider>
+    <TenantModuleProvider user={user}>
     <AIAssistantProvider>
     <ThemeProvider>
+      <TenantModuleRouteGuard activePage={activePage} setActivePage={setActivePage}>
       {user.role === "SuperAdmin" && (
         <Layout
           activePage={activePage}
@@ -648,8 +674,10 @@ if (showLanding && !user) {
           )}
         </ApproverLayout>
       )}
+      </TenantModuleRouteGuard>
     </ThemeProvider>
     </AIAssistantProvider>
+    </TenantModuleProvider>
     </MetadataProvider>
     </SubscriptionProvider>
   );

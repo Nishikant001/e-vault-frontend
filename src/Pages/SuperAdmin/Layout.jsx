@@ -36,6 +36,12 @@ const ICONS = {
       <polyline points="9 22 9 12 15 12 15 22" />
     </svg>
   ),
+  moduleManagement: (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+      <path d="m3.27 6.96 8.73 5.05 8.73-5.05M12 22.08V12" />
+    </svg>
+  ),
   companyCodes: (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="4" y="2" width="16" height="20" rx="1" />
@@ -158,6 +164,7 @@ const NAV_MAIN = [
   { key: "dashboard", label: "Dashboard", icon: "dashboard" },
   { key: "odata", label: "OData Plugins", icon: "odata" },
   { key: "users", label: "All Users", icon: "users" },
+  { key: "moduleManagement", label: "Module Management", icon: "moduleManagement" },
   // { key: "departments", label: "Departments", icon: "departments" }, // hidden
 ];
 

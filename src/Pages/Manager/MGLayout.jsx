@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useTheme } from "../SuperAdmin/Superadmincontext";
 import { getAIAssistantNavItems } from "../../features/aiAssistant/nav";
+import { useTenantModules } from "../../context/TenantModuleContext";
+import { filterNavigationItems } from "../../utils/tenantModuleMapping";
 
 const ICONS = {
   dashboard: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>,
@@ -50,7 +52,12 @@ function NavItem({ item, active, onClick }) {
   );
 }
 
-function Sidebar({ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, user }) {
+function Sidebar({
+ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, user }) {
+  const { isModuleVisible } = useTenantModules();
+  const visible_NAV_MAIN = filterNavigationItems(NAV_MAIN, isModuleVisible);
+  const visible_NAV_AI = filterNavigationItems(NAV_AI, isModuleVisible);
+
   return (
     <>
       {mobileOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={onMobileClose} />}
@@ -84,12 +91,12 @@ function Sidebar({ activePage, onNavigate, onLogout, mobileOpen, onMobileClose, 
         {/* Nav */}
         <div className="flex-1 overflow-y-auto py-2">
           <div className="px-[14px] py-[6px] text-[9px] font-bold text-white/30 uppercase tracking-[0.8px]">Main</div>
-          {NAV_MAIN.map(item => (
+          {visible_NAV_MAIN.map(item => (
             <NavItem key={item.key} item={item} active={activePage === item.key}
               onClick={() => { onNavigate(item.key); onMobileClose?.(); }} />
           ))}
           <div className="px-[14px] pt-3 pb-[6px] text-[9px] font-bold text-white/30 uppercase tracking-[0.8px]">AI Assistant</div>
-          {NAV_AI.map(item => (
+          {visible_NAV_AI.map(item => (
             <NavItem key={item.key} item={item} active={activePage === item.key} onClick={() => { onNavigate(item.key); onMobileClose?.(); }} />
           ))}
         </div>
