@@ -5,6 +5,7 @@ import { useTenantCapabilities } from "../../context/MetadataContext";
 import { getAIAssistantNavItems } from "../../features/aiAssistant/nav";
 import logo from "../../assets/evault-logo-light.png";
 import { Settings2, PlugZap ,Building2 } from "lucide-react";
+import NotificationBell from "../../components/subscription/NotificationBell";
 import { API_BASE_URL } from "../../services/apiClient";
 import { useTenantModules } from "../../context/TenantModuleContext";
 import { filterNavigationItems } from "../../utils/tenantModuleMapping";
@@ -1228,14 +1229,9 @@ function Topbar({ onMenuClick, onTCodeSearch, user }) {
 
       <div className="flex-1" />
            <div className="flex-1" />
-            <div className="flex items-center gap-2 ">
-        <button className="relative w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#232F40] text-slate-500 dark:text-slate-400">
-          {ICONS.bell}
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 rounded-full text-[9px] font-bold text-white flex items-center justify-center">
-            3
-          </span>
-        </button>
-      </div>
+            <div className="flex items-center gap-2">
+  <NotificationBell />
+</div>
       <div className="hidden sm:flex items-center gap-[8px] pl-2 pr-4 py-1.5 mr-10 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#232F40]">
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 ring-2 ring-white/10">
           {getInitials(displayName)}

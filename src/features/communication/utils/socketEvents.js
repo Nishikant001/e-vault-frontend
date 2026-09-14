@@ -20,6 +20,9 @@ export const SOCKET_EVENTS = {
   MESSAGE_STOP_TYPING: "communication:message:stop-typing",
   MESSAGE_EDITED: "communication:message:edited",
   MESSAGE_DELETED: "communication:message:deleted",
+  
+  NOTIFICATION_NEW: "notification:new",
+
 
   CONVERSATION_CREATED: "communication:conversation:created",
   CONVERSATION_UPDATED: "communication:conversation:updated",

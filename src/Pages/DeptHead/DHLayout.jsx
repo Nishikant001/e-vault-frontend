@@ -3,6 +3,7 @@ import { useTheme } from "../SuperAdmin/Superadmincontext";
 import { getAIAssistantNavItems } from "../../features/aiAssistant/nav";
 import { useTenantModules } from "../../context/TenantModuleContext";
 import { filterNavigationItems } from "../../utils/tenantModuleMapping";
+import NotificationBell from "../../components/subscription/NotificationBell";
 
 const ICONS = {
   dashboard: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>,
@@ -120,10 +121,7 @@ function Topbar({ title, onMenuClick, onLogout }) {
       <h1 className="text-[14px] font-bold text-slate-800 dark:text-slate-100 truncate flex-1">{title}</h1>
       <span className="bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-[11px] font-bold px-[10px] py-[2px] rounded-full hidden sm:inline">DeptHead</span>
       <div className="flex items-center gap-2">
-        <button className="relative w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#232F40] text-slate-500 dark:text-slate-400">
-          {ICONS.bell}
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 rounded-full text-[9px] font-bold text-white flex items-center justify-center">3</span>
-        </button>
+        <NotificationBell />
         <button onClick={() => setDark(v => !v)} className="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#232F40] text-slate-500 dark:text-slate-400">
           {dark ? ICONS.sun : ICONS.moon}
         </button>

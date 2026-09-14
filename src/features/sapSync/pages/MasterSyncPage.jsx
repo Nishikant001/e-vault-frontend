@@ -312,15 +312,15 @@ export default function MasterSyncPage() {
           <div className="overflow-x-auto rounded-app-md border border-[var(--border-subtle)]">
             <table className="w-full border-collapse text-sm">
               <thead>
-                <tr className="bg-[var(--surface-sunken)] text-left text-xs font-semibold text-[var(--text-tertiary)]">
-                  <th className="px-4 py-3">{labels.level1Label}</th>
-                  <th className="px-4 py-3">{labels.level2Label}</th>
-                  <th className="px-4 py-3">{labels.level3Label}</th>
-                  <th className="px-4 py-3">ERP Code</th>
-                  <th className="px-4 py-3">Sync Status</th>
-                  <th className="px-4 py-3">Last Sync Time</th>
-                  <th className="px-4 py-3">Source</th>
-                  <th className="px-4 py-3" />
+                <tr className="bg-[var(--surface-sunken)] text-left text-[11px] font-semibold text-[var(--text-tertiary)]">
+                  <th className="px-3 py-2">{labels.level1Label}</th>
+                  <th className="px-3 py-2">{labels.level2Label}</th>
+                  <th className="px-3 py-2">{labels.level3Label}</th>
+                  <th className="px-3 py-2">ERP Code</th>
+                  <th className="px-3 py-2">Sync Status</th>
+                  <th className="px-3 py-2">Last Sync Time</th>
+                  <th className="px-3 py-2">Source</th>
+                  <th className="px-3 py-2" />
                 </tr>
               </thead>
               <tbody>
@@ -329,7 +329,7 @@ export default function MasterSyncPage() {
                     {r.showDept && (
                       <td
                         rowSpan={r.deptSpan}
-                        className="align-top px-4 py-3 font-semibold text-[var(--text-primary)] border-r border-[var(--border-subtle)]"
+                        className="align-top px-3 py-2 font-medium text-[var(--text-primary)] border-r border-[var(--border-subtle)]"
                       >
                         {r.department}
                       </td>
@@ -337,21 +337,21 @@ export default function MasterSyncPage() {
                     {r.showCat && (
                       <td
                         rowSpan={r.catSpan}
-                        className="align-top px-4 py-3 font-medium text-[var(--text-secondary)] border-r border-[var(--border-subtle)]"
+                        className="align-top px-3 py-2 font-medium text-[var(--text-secondary)] border-r border-[var(--border-subtle)]"
                       >
                         {r.category}
                       </td>
                     )}
-                    <td className="px-4 py-3 text-[var(--text-secondary)]">{r.documentType}</td>
-                    <td className="px-4 py-3 font-mono text-xs">{r.sapCode || "—"}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2 text-[var(--text-secondary)]">{r.documentType}</td>
+                    <td className="px-3 py-2 font-mono text-xs">{r.sapCode || "—"}</td>
+                    <td className="px-3 py-2">
                       <StatusBadge status={r.syncStatus} tone={statusTone(r.syncStatus)} />
                     </td>
-                    <td className="px-4 py-3">{formatDateTime(r.lastSyncTime)}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2">{formatDateTime(r.lastSyncTime)}</td>
+                    <td className="px-3 py-2">
                       <StatusBadge status={r.source} tone={r.source === "SAP" ? "info" : "neutral"} showIcon={false} />
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-3 py-2">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

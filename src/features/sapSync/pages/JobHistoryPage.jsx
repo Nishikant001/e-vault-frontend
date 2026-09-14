@@ -50,16 +50,81 @@ export default function JobHistoryPage({ onNavigate }) {
 
   const columns = useMemo(
     () => [
-      { key: "syncType", header: "Exe Name", render: (r) => <span className="font-medium text-[var(--text-primary)]">{r.syncType} SYNC</span> },
-      { key: "startTime", header: "Started", render: (r) => formatDateTime(r.startTime) },
-      { key: "endTime", header: "Completed", render: (r) => formatDateTime(r.endTime) },
-      { key: "durationMs", header: "Duration", render: (r) => formatDuration(r.durationMs) },
-      { key: "status", header: "Status", render: (r) => <StatusBadge status={r.status} tone={statusTone(r.status)} /> },
-      { key: "recordsFetched", header: "Records Read" },
-      { key: "recordsCreated", header: "Imported" },
-      { key: "recordsUpdated", header: "Updated" },
-      { key: "recordsSkipped", header: "Skipped" },
-      { key: "recordsFailed", header: "Errors", render: (r) => (r.recordsFailed > 0 ? <span className="font-medium text-danger-600">{r.recordsFailed}</span> : "0") },
+     {
+  key: "syncType",
+  header: <span className="whitespace-nowrap">Exe Name</span>,
+  render: (r) => (
+    <span className="whitespace-nowrap text-[11px] font-medium text-[var(--text-primary)]">
+      {r.syncType} SYNC
+    </span>
+  ),
+},
+{
+  key: "startTime",
+  header: "Started",
+  render: (r) => (
+    <span className="text-[11px]">
+      {formatDateTime(r.startTime)}
+    </span>
+  ),
+},
+{
+  key: "endTime",
+  header: "Completed",
+  render: (r) => (
+    <span className="text-[11px]">
+      {formatDateTime(r.endTime)}
+    </span>
+  ),
+},
+{
+  key: "durationMs",
+  header: "Duration",
+  render: (r) => (
+    <span className="text-[11px]">
+      {formatDuration(r.durationMs)}
+    </span>
+  ),
+},
+{
+  key: "status",
+  header: "Status",
+  render: (r) => (
+    <StatusBadge
+      status={r.status}
+      tone={statusTone(r.status)}
+      className="text-[10px]"
+    />
+  ),
+},
+{
+  key: "recordsFetched",
+  header: "Records Read",
+  render: (r) => <span className="text-[11px]">{r.recordsFetched}</span>,
+},
+{
+  key: "recordsCreated",
+  header: "Imported",
+  render: (r) => <span className="text-[11px]">{r.recordsCreated}</span>,
+},
+// 
+
+{
+  key: "recordsFailed",
+  header: "Errors",
+  render: (r) => (
+    <span
+      className={`text-[11px] ${
+        r.recordsFailed > 0
+          ? "font-medium text-danger-600"
+          : "text-[var(--text-primary)]"
+      }`}
+    >
+      {r.recordsFailed}
+    </span>
+  ),
+},
+      // { key: "recordsFailed", header: "Errors", render: (r) => (r.recordsFailed > 0 ? <span className="font-medium text-danger-600">{r.recordsFailed}</span> : "0") },
       {
         key: "actions",
         header: "",
@@ -98,7 +163,7 @@ export default function JobHistoryPage({ onNavigate }) {
               </button>
             </span>
           }
-          subtitle="Every SAP Master / Document / Retry synchronization run for this tenant."
+          subtitle="Every ERP Master / Document / Retry synchronization run for this tenant."
           action={
             <div className="flex items-center gap-2">
               <AppButton variant="secondary" size="sm" icon={ScrollText} onClick={() => onNavigate?.("SAP_SYNC_LOG_VIEWER")}>
@@ -117,7 +182,14 @@ export default function JobHistoryPage({ onNavigate }) {
           <AppFilter label="Status" options={STATUS_OPTIONS} value={status} onChange={setStatus} />
         </div>
 
-        <AppTable columns={columns} rows={rows} loading={loading} onRowClick={setDetail} emptyTitle="No sync runs yet" />
+        <AppTable
+  columns={columns}
+  rows={rows}
+  loading={loading}
+  onRowClick={setDetail}
+  emptyTitle="No sync runs yet"
+  tableClassName="text-[11px]"
+/>
         <Pagination page={pageInfo.page} totalPages={pageInfo.totalPages} onChange={setPage} totalItems={pageInfo.total} pageSize={PAGE_SIZE} />
       </AppCard>
 
@@ -180,7 +252,7 @@ function JobHistoryGuideModal({ open, onClose }) {
     {
       icon: ScrollText,
       title: "View job runs",
-      desc: "Every SAP Master, Document, and Retry synchronization run for this tenant is listed here with its status and record counts.",
+      desc: "Every ERP Master, Document, and Retry synchronization run for this tenant is listed here with its status and record counts.",
     },
     {
       icon: Filter,

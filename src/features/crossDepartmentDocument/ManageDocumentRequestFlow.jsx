@@ -241,7 +241,7 @@ export default function ManageDocumentRequestFlow() {
   // STEP: mask -> save masks -> preview masked copy
   // ==========================================================
 
-  const handleConfirmMasks = async ({ share: currentShare, masks }) => {
+    const handleConfirmMasks = async ({ share: currentShare, masks }) => {
     const shareId =
       currentShare?.shareId ||
       currentShare?.id ||
@@ -257,11 +257,29 @@ export default function ManageDocumentRequestFlow() {
 
     setShare(updatedShare);
 
-    // The backend does not yet return a flattened masked-preview image
-    // (see file header) — reuse the owner preview so the screen still
-    // shows something concrete instead of a blank state.
+    // Backend has already drawn the masks directly onto the temporary
+    // share's file on disk (see crossDepartmentDocumentService.maskShare)
+    // and GET .../cross-department-shares/:id/view now serves those
+    // masked bytes. Fetch the ACTUAL masked file instead of reusing the
+    // owner's original unmasked preview.
+    let maskedPreviewUrl = previewUrl;
+    try {
+      const viewResponse = await fetch(
+                `${API_BASE_URL}/cross-department-documents/cross-department-shares/${shareId}/owner-preview`,
+        { headers: authHeaders() }
+      );
+      if (viewResponse.ok) {
+        const blob = await viewResponse.blob();
+        maskedPreviewUrl = URL.createObjectURL(blob);
+      }
+    } catch {
+      // If this fails for any reason, fall back to the owner preview
+      // below rather than leaving the screen blank.
+    }
+
     setMaskedCopy({
-      previewUrl,
+      previewUrl: maskedPreviewUrl,
+      previewType: getPreviewTypeFromDocument(document),
       documentName:
         document?.originalFileName ||
         document?.fileName ||

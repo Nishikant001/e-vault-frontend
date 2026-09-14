@@ -3,17 +3,31 @@ import Login from "./Pages/Login/Login";
 import RegisterFree from "./Pages/Login/RegisterFree";
 import LoginFree from "./Pages/Login/LoginFree";
 import { ThemeProvider } from "./Pages/SuperAdmin/Superadmincontext";
-import { MetadataProvider, useTenantCapabilities } from "./context/MetadataContext";
-import { SubscriptionProvider , useSubscription } from "./context/SubscriptionContext";
-import { TenantModuleProvider, useTenantModules } from "./context/TenantModuleContext";
+import {
+  MetadataProvider,
+  useTenantCapabilities,
+} from "./context/MetadataContext";
+import {
+  SubscriptionProvider,
+  useSubscription,
+} from "./context/SubscriptionContext";
+import {
+  TenantModuleProvider,
+  useTenantModules,
+} from "./context/TenantModuleContext";
 import { getModuleForPage } from "./utils/tenantModuleMapping";
 import LandingRouter from "../src/Pages/Home/LandingRouter";
 import { AIAssistantProvider } from "./features/aiAssistant/AIAssistantContext";
-import { buildAIAssistantPages, AI_PAGE_TITLES } from "./features/aiAssistant/nav";
-import { buildCommunicationPages, COMMUNICATION_PAGE_TITLES } from "./features/communication/nav";
+import {
+  buildAIAssistantPages,
+  AI_PAGE_TITLES,
+} from "./features/aiAssistant/nav";
+import {
+  buildCommunicationPages,
+  COMMUNICATION_PAGE_TITLES,
+} from "./features/communication/nav";
 import BookDemo from "./Pages/BookDemo/BookDemo";
 import BookDemoFlow from "./Pages/BookDemo/BookDemoFlow";
-
 
 // Subscription Management — SuperAdmin screens
 import SubscriptionsAdmin from "./Pages/SuperAdmin/SubscriptionsAdmin";
@@ -50,8 +64,7 @@ import WorkflowAssignmentPage from "./Pages/TenantAdmin/Approvals/WorkflowAssign
 import UserAssignmentPage from "./Pages/TenantAdmin/UserAssignment";
 import DocumentSearchModal from "./Pages/TenantAdmin/DMSWorkflow/modals/Documentsearchmodal";
 import MetadataTemplateManager from "./features/metadataEngine/TemplateManager";
-import CrossDepartmentAccessPage
-  from "./features/crossDepartmentDocument/CrossDepartmentAccessPage";
+import CrossDepartmentAccessPage from "./features/crossDepartmentDocument/CrossDepartmentAccessPage";
 // SAP Synchronization Module (Settings → SAP Synchronization) — TenantAdmin only
 import SapSyncDashboard from "./features/sapSync/pages/SapSyncDashboard";
 import MasterSyncPage from "./features/sapSync/pages/MasterSyncPage";
@@ -64,7 +77,6 @@ import SapSyncSettingsPage from "./features/sapSync/pages/SettingsPage";
 
 // Enterprise Audit Module (shared across SuperAdmin / TenantAdmin / Auditor)
 import { AuditList } from "./Pages/Audit";
-
 
 // BranchManager
 import { BMLayout } from "./Pages/BranchManager/BMLayout";
@@ -115,7 +127,6 @@ import ApproverApprovals from "./Pages/Approver/Approverapprovals";
 // PAGE MAPS
 // ─────────────────────────────────────────────
 
-
 const SUPER_ADMIN_PAGES = {
   dashboard: (nav) => <Dashboard onNavigate={nav} />,
   tenantsPaid: () => <PaidTenants />,
@@ -160,7 +171,9 @@ const TENANT_ADMIN_PAGES = {
   SAP_SYNC_DASHBOARD: (nav) => <SapSyncDashboard onNavigate={nav} />,
   SAP_SYNC_MASTERS: (nav) => <MasterSyncPage onNavigate={nav} />,
   SAP_SYNC_DOCUMENTS: (nav) => <DocumentSyncPage onNavigate={nav} />,
-  SAP_SYNC_PENDING_CLASSIFICATION: (nav) => <PendingClassificationPage onNavigate={nav} />,
+  SAP_SYNC_PENDING_CLASSIFICATION: (nav) => (
+    <PendingClassificationPage onNavigate={nav} />
+  ),
   SAP_SYNC_SCHEDULER: (nav) => <SchedulerPage onNavigate={nav} />,
   SAP_SYNC_JOB_HISTORY: (nav) => <JobHistoryPage onNavigate={nav} />,
   SAP_SYNC_LOG_VIEWER: (nav) => <LogViewerPage onNavigate={nav} />,
@@ -175,7 +188,7 @@ const BRANCH_MANAGER_PAGES = {
   workflow: (nav) => <BMWorkflow onNavigate={nav} />,
   folders: (nav) => <BMFolders onNavigate={nav} />,
   approvals: (nav) => <BMApprovals onNavigate={nav} />,
-    crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
+  crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
 
   ...buildAIAssistantPages("BranchManager"),
   ...buildCommunicationPages(),
@@ -187,7 +200,7 @@ const DEPT_HEAD_PAGES = {
   workflow: (nav) => <DHWorkflow onNavigate={nav} />,
   approvals: (nav) => <DHApprovals onNavigate={nav} />,
   folders: (nav) => <DHFolders onNavigate={nav} />,
-    crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
+  crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
   crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
 
   ...buildAIAssistantPages("DeptHead"),
@@ -208,7 +221,7 @@ const UPLOADER_PAGES = {
   dashboard: (nav) => <UploaderDashboard onNavigate={nav} />,
   upload: (nav) => <TAWorkflow onNavigate={nav} />,
   documents: (nav) => <UploaderDocuments onNavigate={nav} />,
-    crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
+  crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
 
   ...buildAIAssistantPages("Uploader"),
   ...buildCommunicationPages(),
@@ -218,7 +231,7 @@ const VIEWER_PAGES = {
   dashboard: (nav) => <ViewerDashboard onNavigate={nav} />,
   documents: () => <ViewerDocuments />,
   folders: () => <ViewerFolders />,
-    crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
+  crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
 
   ...buildAIAssistantPages("Viewer"),
   ...buildCommunicationPages(),
@@ -228,7 +241,7 @@ const AUDITOR_PAGES = {
   dashboard: (nav) => <AuditorDashboard onNavigate={nav} />,
   documents: () => <AuditorDocuments />,
   auditlog: (nav) => <AuditList role="Auditor" onNavigate={nav} />,
-    crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
+  crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
 
   ...buildAIAssistantPages("Auditor"),
   ...buildCommunicationPages(),
@@ -238,7 +251,7 @@ const APPROVER_PAGES = {
   dashboard: (nav) => <ApproverDashboard onNavigate={nav} />,
   approvals: () => <ApproverApprovals />,
   documents: (nav) => <TADocuments onNavigate={nav} />,
-    crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
+  crossDepartmentRequest: () => <CrossDepartmentAccessPage />,
 
   ...buildAIAssistantPages("Approver"),
   ...buildCommunicationPages(),
@@ -246,7 +259,7 @@ const APPROVER_PAGES = {
 
 const PAGE_TITLES = {
   dashboard: "Dashboard",
-    crossDepartmentRequest: "Request Document Access",
+  crossDepartmentRequest: "Request Document Access",
   users: "User Management",
   companyCodes: "Company Codes",
   plants: "Plants",
@@ -296,6 +309,9 @@ const FREE_TENANT_ALLOWED_PAGES = new Set([
   "folder",
   "documents",
   "workflow",
+  "approvalWorkflows",
+  // "workflowAssignment",
+  "approvals",
   "metadataTemplates",
   "subscription",
 ]);
@@ -328,8 +344,8 @@ function UpgradePrompt({ pageTitle, onGoToDashboard }) {
         {pageTitle} is a premium feature
       </h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-5">
-        Your current plan only includes Dashboard access. Upgrade your subscription to unlock this
-        and every other module.
+        Your current plan only includes Dashboard access. Upgrade your
+        subscription to unlock this and every other module.
       </p>
       <button
         onClick={onGoToDashboard}
@@ -356,8 +372,8 @@ function ErpNotEnabledPrompt({ pageTitle, onGoToDashboard }) {
         {pageTitle} requires ERP integration
       </h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm mb-5">
-        ERP integration is not enabled for this tenant. Contact your SuperAdmin if you need SAP
-        synchronization enabled for your organization.
+        ERP integration is not enabled for this tenant. Contact your SuperAdmin
+        if you need SAP synchronization enabled for your organization.
       </p>
       <button
         onClick={onGoToDashboard}
@@ -409,21 +425,21 @@ function TenantAdminSection({
             onGoToDashboard={() => setActivePage("dashboard")}
           />
         ) : (
-          (TENANT_ADMIN_PAGES[activePage] ?? TENANT_ADMIN_PAGES.dashboard)(setActivePage)
+          (TENANT_ADMIN_PAGES[activePage] ?? TENANT_ADMIN_PAGES.dashboard)(
+            setActivePage,
+          )
         )}
       </TenantLayout>
 
       {showTCodeSearch && (
-  <DocumentSearchModal
-    onClose={() => setShowTCodeSearch(false)}
-    onViewDoc={(doc, action) => console.log(action, doc)}
-  />
-)}
+        <DocumentSearchModal
+          onClose={() => setShowTCodeSearch(false)}
+          onViewDoc={(doc, action) => console.log(action, doc)}
+        />
+      )}
     </>
   );
 }
-
-
 
 const doLogout = (setUser) => {
   localStorage.removeItem("accessToken");
@@ -479,55 +495,66 @@ export default function App() {
   // pre-auth screen shows. Only reachable once showLanding is false.
   const [authScreen, setAuthScreen] = useState("login");
   const [showBookDemoFunnel, setShowBookDemoFunnel] = useState(false); // welcome→policies→eligibility
-const [showBookDemoPage, setShowBookDemoPage] = useState(false);     // final Book Demo page
-const [pendingBookDemo, setPendingBookDemo] = useState(false);       // true jab auth ke baad demo page pe jaana ho
+  const [showBookDemoPage, setShowBookDemoPage] = useState(false); // final Book Demo page
+  const [pendingBookDemo, setPendingBookDemo] = useState(false); // true jab auth ke baad demo page pe jaana ho
 
   const handleAuthenticated = (u) => {
-  setUser(u);
-  setAuthScreen("login");
-  if (pendingBookDemo) {
-    setPendingBookDemo(false);
-    setShowBookDemoPage(true);   // dashboard skip, seedha Book Demo page
-  } else {
-    setActivePage("dashboard");
-  }
-};
+    setUser(u);
+    setAuthScreen("login");
+    if (pendingBookDemo) {
+      setPendingBookDemo(false);
+      setShowBookDemoPage(true); // dashboard skip, seedha Book Demo page
+    } else {
+      setActivePage("dashboard");
+    }
+  };
 
   // STEP 1 — Landing Page
-if (showLanding && !user) {
-  if (showBookDemoFunnel) {
+  if (showLanding && !user) {
+    if (showBookDemoFunnel) {
+      return (
+        <BookDemoFlow
+          onExit={() => setShowBookDemoFunnel(false)}
+          onDone={() => {
+            setShowBookDemoFunnel(false);
+            if (user) {
+              setShowBookDemoPage(true); // already logged in — auth skip
+            } else {
+              setPendingBookDemo(true);
+              setShowLanding(false);
+              setAuthScreen("register-free");
+            }
+          }}
+        />
+      );
+    }
+    if (showBookDemoPage) {
+      return (
+        <BookDemo
+          onBack={() => {
+            setShowBookDemoPage(false);
+          }}
+          onStartFreeTrial={() => setShowBookDemoPage(false)}
+        />
+      );
+    }
     return (
-      <BookDemoFlow
-        onExit={() => setShowBookDemoFunnel(false)}
-       onDone={() => {
-  setShowBookDemoFunnel(false);
-  if (user) {
-    setShowBookDemoPage(true);       // already logged in — auth skip
-  } else {
-    setPendingBookDemo(true);
-    setShowLanding(false);
-    setAuthScreen("register-free");
-  }
-}}
+      <LandingRouter
+        onGetStarted={() => setShowLanding(false)}
+        onWatchDemo={() => setShowBookDemoFunnel(true)}
       />
     );
   }
-  if (showBookDemoPage) {
-    return <BookDemo onBack={() => { setShowBookDemoPage(false); }} onStartFreeTrial={() => setShowBookDemoPage(false)} />;
-  }
-  return (
-    <LandingRouter
-      onGetStarted={() => setShowLanding(false)}
-      onWatchDemo={() => setShowBookDemoFunnel(true)}
-    />
-  );
-}
-
 
   // STEP 2 — Login Page (PAID existing / FREE login / FREE registration)
   if (!user) {
     if (authScreen === "register-free") {
-      return <RegisterFree onLogin={handleAuthenticated} onBackToLogin={() => setAuthScreen("login")} />;
+      return (
+        <RegisterFree
+          onLogin={handleAuthenticated}
+          onBackToLogin={() => setAuthScreen("login")}
+        />
+      );
     }
     if (authScreen === "login-free") {
       return (
@@ -550,135 +577,142 @@ if (showLanding && !user) {
   // STEP 3 — Role Based Dashboard
   return (
     <SubscriptionProvider>
-    <MetadataProvider>
-    <TenantModuleProvider user={user}>
-    <AIAssistantProvider>
-    <ThemeProvider>
-      <TenantModuleRouteGuard activePage={activePage} setActivePage={setActivePage}>
-      {user.role === "SuperAdmin" && (
-        <Layout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-        >
-          {(SUPER_ADMIN_PAGES[activePage] ?? SUPER_ADMIN_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </Layout>
-      )}
+      <MetadataProvider>
+        <TenantModuleProvider user={user}>
+          <AIAssistantProvider>
+            <ThemeProvider>
+              <TenantModuleRouteGuard
+                activePage={activePage}
+                setActivePage={setActivePage}
+              >
+                {user.role === "SuperAdmin" && (
+                  <Layout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                  >
+                    {(
+                      SUPER_ADMIN_PAGES[activePage] ??
+                      SUPER_ADMIN_PAGES.dashboard
+                    )(setActivePage)}
+                  </Layout>
+                )}
 
- {user.role === "TenantAdmin" && (
-  <TenantAdminSection
-    activePage={activePage}
-    setActivePage={setActivePage}
-    user={user}
-    setUser={setUser}
-    showTCodeSearch={showTCodeSearch}
-    setShowTCodeSearch={setShowTCodeSearch}
-  />
-)}
+                {user.role === "TenantAdmin" && (
+                  <TenantAdminSection
+                    activePage={activePage}
+                    setActivePage={setActivePage}
+                    user={user}
+                    setUser={setUser}
+                    showTCodeSearch={showTCodeSearch}
+                    setShowTCodeSearch={setShowTCodeSearch}
+                  />
+                )}
 
-      {user.role === "BranchManager" && (
-        <BMLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(BRANCH_MANAGER_PAGES[activePage] ?? BRANCH_MANAGER_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </BMLayout>
-      )}
+                {user.role === "BranchManager" && (
+                  <BMLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(
+                      BRANCH_MANAGER_PAGES[activePage] ??
+                      BRANCH_MANAGER_PAGES.dashboard
+                    )(setActivePage)}
+                  </BMLayout>
+                )}
 
-      {user.role === "DeptHead" && (
-        <DHLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(DEPT_HEAD_PAGES[activePage] ?? DEPT_HEAD_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </DHLayout>
-      )}
+                {user.role === "DeptHead" && (
+                  <DHLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(DEPT_HEAD_PAGES[activePage] ?? DEPT_HEAD_PAGES.dashboard)(
+                      setActivePage,
+                    )}
+                  </DHLayout>
+                )}
 
-      {user.role === "Manager" && (
-        <MGLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(MANAGER_PAGES[activePage] ?? MANAGER_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </MGLayout>
-      )}
+                {user.role === "Manager" && (
+                  <MGLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(MANAGER_PAGES[activePage] ?? MANAGER_PAGES.dashboard)(
+                      setActivePage,
+                    )}
+                  </MGLayout>
+                )}
 
-      {user.role === "Uploader" && (
-        <UploaderLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(UPLOADER_PAGES[activePage] ?? UPLOADER_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </UploaderLayout>
-      )}
+                {user.role === "Uploader" && (
+                  <UploaderLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(UPLOADER_PAGES[activePage] ?? UPLOADER_PAGES.dashboard)(
+                      setActivePage,
+                    )}
+                  </UploaderLayout>
+                )}
 
-      {user.role === "Viewer" && (
-        <ViewerLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(VIEWER_PAGES[activePage] ?? VIEWER_PAGES.dashboard)(setActivePage)}
-        </ViewerLayout>
-      )}
+                {user.role === "Viewer" && (
+                  <ViewerLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(VIEWER_PAGES[activePage] ?? VIEWER_PAGES.dashboard)(
+                      setActivePage,
+                    )}
+                  </ViewerLayout>
+                )}
 
-      {user.role === "Auditor" && (
-        <AuditorLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(AUDITOR_PAGES[activePage] ?? AUDITOR_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </AuditorLayout>
-      )}
+                {user.role === "Auditor" && (
+                  <AuditorLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(AUDITOR_PAGES[activePage] ?? AUDITOR_PAGES.dashboard)(
+                      setActivePage,
+                    )}
+                  </AuditorLayout>
+                )}
 
-      {user.role === "Approver" && (
-        <ApproverLayout
-          activePage={activePage}
-          onNavigate={setActivePage}
-          onLogout={() => doLogout(setUser)}
-          title={PAGE_TITLES[activePage] || activePage}
-          user={user}
-        >
-          {(APPROVER_PAGES[activePage] ?? APPROVER_PAGES.dashboard)(
-            setActivePage,
-          )}
-        </ApproverLayout>
-      )}
-      </TenantModuleRouteGuard>
-    </ThemeProvider>
-    </AIAssistantProvider>
-    </TenantModuleProvider>
-    </MetadataProvider>
+                {user.role === "Approver" && (
+                  <ApproverLayout
+                    activePage={activePage}
+                    onNavigate={setActivePage}
+                    onLogout={() => doLogout(setUser)}
+                    title={PAGE_TITLES[activePage] || activePage}
+                    user={user}
+                  >
+                    {(APPROVER_PAGES[activePage] ?? APPROVER_PAGES.dashboard)(
+                      setActivePage,
+                    )}
+                  </ApproverLayout>
+                )}
+              </TenantModuleRouteGuard>
+            </ThemeProvider>
+          </AIAssistantProvider>
+        </TenantModuleProvider>
+      </MetadataProvider>
     </SubscriptionProvider>
   );
 }

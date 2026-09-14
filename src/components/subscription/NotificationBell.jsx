@@ -1,4 +1,3 @@
-// src/components/subscription/NotificationBell.jsx
 //
 // Bell icon + unread badge + dropdown panel, backed by
 // GET/PUT /api/notifications*. Replaces the static hardcoded-"3" bell
@@ -6,8 +5,11 @@
 // SuperAdmin/Layout.jsx — same visual slot, real data.
 
 import { useState, useEffect, useCallback, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
 import { Bell, CheckCheck, AlertTriangle, Info, Clock } from "lucide-react";
 import { NotificationApi, NOTIFICATION_TONE } from "../../services/subscriptionApi";
+import CommunicationSocket from "../../features/communication/services/communicationSocket";
+import { SOCKET_EVENTS } from "../../features/communication/utils/socketEvents";
 
 const TONE_ICON = {
   danger: AlertTriangle,
@@ -35,10 +37,12 @@ function timeAgo(iso) {
 }
 
 export default function NotificationBell() {
+  // const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [serverUnreadCount, setServerUnreadCount] = useState(0);
   const panelRef = useRef(null);
 
   const load = useCallback(async () => {
@@ -46,7 +50,10 @@ export default function NotificationBell() {
     setError("");
     try {
       const res = await NotificationApi.list();
-      setItems(res.data || []);
+setItems(res.data || []);
+
+const unreadRes = await NotificationApi.unreadCount();
+setServerUnreadCount(unreadRes.data?.count || 0);
     } catch (err) {
       setError(err.message || "Could not load notifications.");
     } finally {
@@ -59,6 +66,37 @@ export default function NotificationBell() {
   }, [load]);
 
   useEffect(() => {
+  const socket = CommunicationSocket.connect();
+
+  const handleNewNotification = (notification) => {
+  if (!notification) return;
+
+  setItems((prev) => {
+    const exists = prev.some(
+      (item) => item.id === notification.id
+    );
+
+    if (exists) return prev;
+
+    return [notification, ...prev];
+  });
+
+  if (!notification.isRead) {
+    setServerUnreadCount((count) => count + 1);
+  }
+};
+
+  const unsubscribe = CommunicationSocket.on(
+    SOCKET_EVENTS.NOTIFICATION_NEW,
+    handleNewNotification
+  );
+
+  return () => {
+    unsubscribe?.();
+  };
+}, []);
+
+  useEffect(() => {
     function onClickOutside(e) {
       if (panelRef.current && !panelRef.current.contains(e.target)) setOpen(false);
     }
@@ -66,10 +104,18 @@ export default function NotificationBell() {
     return () => document.removeEventListener("mousedown", onClickOutside);
   }, [open]);
 
-  const unreadCount = items.filter((n) => !n.isRead).length;
+  const unreadCount = serverUnreadCount;
 
   async function markRead(id) {
-    setItems((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
+   setItems((prev) =>
+  prev.map((n) => ({ ...n, isRead: true }))
+);
+
+setServerUnreadCount(0);
+
+setServerUnreadCount((count) =>
+  Math.max(0, count - 1)
+);
     try {
       await NotificationApi.markRead(id);
     } catch {
@@ -86,6 +132,28 @@ export default function NotificationBell() {
       setItems(prevItems);
     }
   }
+ function handleNotificationClick(notification) {
+  if (!notification.isRead) {
+    markRead(notification.id);
+  }
+
+  const documentId = notification.metadata?.documentId;
+
+  if (
+    notification.type === "APPROVAL_PENDING" ||
+    notification.type === "APPROVAL_SUBMITTED" ||
+    notification.type === "APPROVAL_REJECTED" ||
+    notification.type === "APPROVAL_SENT_BACK"
+  ) {
+    const params = new URLSearchParams();
+
+    if (documentId) {
+      params.set("documentId", documentId);
+    }
+
+    window.location.href = `/approvals?${params.toString()}`;
+  }
+}
 
   return (
     <div className="relative" ref={panelRef}>
@@ -137,7 +205,7 @@ export default function NotificationBell() {
                 return (
                   <button
                     key={n.id}
-                    onClick={() => !n.isRead && markRead(n.id)}
+                    onClick={() => handleNotificationClick(n)}
                     className={`flex w-full items-start gap-2.5 border-b border-[var(--border-subtle)] px-4 py-3 text-left last:border-0 hover:bg-[var(--surface-card-hover)] ${
                       !n.isRead ? "bg-brand-50/40 dark:bg-brand-500/5" : ""
                     }`}

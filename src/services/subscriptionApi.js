@@ -182,9 +182,20 @@ export const PlanApi = {
 // Notifications — /api/notifications/*
 // ─────────────────────────────────────────────────────────────
 export const NotificationApi = {
-  list: ({ unreadOnly } = {}) => get("/notifications", unreadOnly ? { unreadOnly: "true" } : undefined),
-  markRead: (id) => put(`/notifications/${id}/read`),
-  markAllRead: () => put("/notifications/read-all"),
+  list: ({ unreadOnly } = {}) =>
+    get(
+      "/notifications",
+      unreadOnly ? { unreadOnly: "true" } : undefined
+    ),
+
+  unreadCount: () =>
+    get("/notifications/unread-count"),
+
+  markRead: (id) =>
+    put(`/notifications/${id}/read`),
+
+  markAllRead: () =>
+    put("/notifications/read-all"),
 };
 
 // Notification `type` → visual tone, so TRIAL_REMINDER/TRIAL_EXPIRED stand
@@ -194,4 +205,15 @@ export const NOTIFICATION_TONE = {
   TRIAL_EXPIRED: "danger",
   SUBSCRIPTION_CHANGED: "info",
   SYSTEM: "neutral",
+
+  COMMUNICATION_MESSAGE: "info",
+  COMMUNICATION_MISSED_CALL: "warning",
+
+  APPROVAL_SUBMITTED: "info",
+  APPROVAL_PENDING: "warning",
+  APPROVAL_APPROVED: "info",
+  APPROVAL_COMPLETED: "info",
+  APPROVAL_REJECTED: "danger",
+  APPROVAL_SENT_BACK: "warning",
+  APPROVAL_CANCELLED: "neutral",
 };
