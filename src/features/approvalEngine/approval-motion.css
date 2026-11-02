@@ -1,0 +1,69 @@
+/* src/features/approvalEngine/approval-motion.css
+ *
+ * One small motion vocabulary for every approval screen.
+ * Rule of thumb: motion either (a) plays once when a screen loads, or
+ * (b) answers a click (open, select, add, expand). Nothing loops.
+ * Everything is switched off under prefers-reduced-motion.
+ */
+
+:root {
+  --am-ease: cubic-bezier(0.22, 1, 0.36, 1); /* soft ease-out */
+}
+
+@keyframes am-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes am-slide-in-right {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes am-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes am-pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes am-grow-y {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+@keyframes am-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(59, 91, 219, 0.35); }
+  100% { box-shadow: 0 0 0 10px rgba(59, 91, 219, 0); }
+}
+
+.am-rise        { animation: am-rise 0.5s var(--am-ease) both; animation-delay: calc(var(--am-i, 0) * 70ms); }
+.am-slide-right { animation: am-slide-in-right 0.38s var(--am-ease) both; }
+.am-fade        { animation: am-fade 0.25s ease-out both; }
+.am-pop         { animation: am-pop 0.35s var(--am-ease) both; animation-delay: calc(var(--am-i, 0) * 45ms); }
+.am-ring        { animation: am-ring 0.7s ease-out 1; }
+.am-connector   { transform-origin: top; animation: am-grow-y 0.3s var(--am-ease) both; animation-delay: calc(var(--am-i, 0) * 45ms + 120ms); }
+
+/* Table rows: quick stagger for the first ten rows, replayed on page / filter change */
+.am-rows tbody tr { animation: am-rise 0.4s var(--am-ease) both; }
+.am-rows tbody tr:nth-child(1)  { animation-delay: 0ms; }
+.am-rows tbody tr:nth-child(2)  { animation-delay: 30ms; }
+.am-rows tbody tr:nth-child(3)  { animation-delay: 60ms; }
+.am-rows tbody tr:nth-child(4)  { animation-delay: 90ms; }
+.am-rows tbody tr:nth-child(5)  { animation-delay: 120ms; }
+.am-rows tbody tr:nth-child(6)  { animation-delay: 150ms; }
+.am-rows tbody tr:nth-child(7)  { animation-delay: 180ms; }
+.am-rows tbody tr:nth-child(8)  { animation-delay: 210ms; }
+.am-rows tbody tr:nth-child(9)  { animation-delay: 240ms; }
+.am-rows tbody tr:nth-child(10) { animation-delay: 270ms; }
+
+/* Subtle press feedback for icon buttons */
+.am-press { transition: transform 0.15s var(--am-ease), background-color 0.15s, color 0.15s; }
+.am-press:hover  { transform: translateY(-1px); }
+.am-press:active { transform: translateY(0) scale(0.94); }
+
+@media (prefers-reduced-motion: reduce) {
+  .am-rise, .am-slide-right, .am-fade, .am-pop, .am-ring, .am-connector,
+  .am-rows tbody tr {
+    animation: none !important;
+  }
+  .am-press { transition: none; }
+}

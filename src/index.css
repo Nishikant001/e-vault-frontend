@@ -1,0 +1,147 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   DMS Design System — Design Tokens
+   Palette: Cobalt (brand) · Ink (neutral base) · Amber/Emerald/Ember/Sky (status)
+   Type: Manrope (display) · Inter (UI/body) · JetBrains Mono (data/codes)
+   ========================================================================== */
+
+@theme {
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Brand */
+  --color-brand-50: #eef1fd;
+  --color-brand-100: #dde3fb;
+  --color-brand-200: #b8c4f6;
+  --color-brand-300: #8fa1f0;
+  --color-brand-400: #5f78e6;
+  --color-brand-500: #3654d8;
+  --color-brand-600: #2c44c0;
+  --color-brand-700: #24379c;
+  --color-brand-800: #1e2d7d;
+  --color-brand-900: #182463;
+
+  /* Ink neutrals (slightly indigo-tinted, not pure gray) */
+  --color-ink-25: #fbfbfe;
+  --color-ink-50: #f7f8fc;
+  --color-ink-100: #eef0f7;
+  --color-ink-200: #dfe2ee;
+  --color-ink-300: #c3c8dc;
+  --color-ink-400: #9298b5;
+  --color-ink-500: #6c7292;
+  --color-ink-600: #4f5573;
+  --color-ink-700: #383d58;
+  --color-ink-800: #23273f;
+  --color-ink-900: #12172b;
+  --color-ink-950: #0a0d1a;
+
+  /* Status semantics */
+  --color-success-50: #e9f9f3;
+  --color-success-500: #12a583;
+  --color-success-600: #0e8a6d;
+  --color-warning-50: #fef6e7;
+  --color-warning-500: #f5a524;
+  --color-warning-600: #d98a0e;
+  --color-danger-50: #fdeceb;
+  --color-danger-500: #e4483f;
+  --color-danger-600: #c8362e;
+  --color-info-50: #e8f6fd;
+  --color-info-500: #0ea5e9;
+  --color-info-600: #0b86bf;
+
+  /* Radii */
+  --radius-app-sm: 8px;
+  --radius-app-md: 12px;
+  --radius-app-lg: 16px;
+  --radius-app-xl: 20px;
+
+  /* Shadows (soft, layered) */
+  --shadow-app-xs: 0 1px 2px 0 rgb(18 23 43 / 0.05);
+  --shadow-app-sm: 0 1px 3px 0 rgb(18 23 43 / 0.07), 0 1px 2px -1px rgb(18 23 43 / 0.06);
+  --shadow-app-md: 0 4px 10px -2px rgb(18 23 43 / 0.08), 0 2px 6px -2px rgb(18 23 43 / 0.05);
+  --shadow-app-lg: 0 12px 28px -6px rgb(18 23 43 / 0.12), 0 4px 10px -4px rgb(18 23 43 / 0.06);
+  --shadow-app-glow: 0 0 0 4px var(--color-brand-100);
+}
+
+/* Semantic surface tokens — flip between light/dark without touching components */
+:root {
+  --surface-canvas: var(--color-ink-50);
+  --surface-card: #ffffff;
+  --surface-card-hover: var(--color-ink-25);
+  --surface-sunken: var(--color-ink-100);
+  --surface-overlay: rgb(10 13 26 / 0.5);
+  --border-subtle: var(--color-ink-200);
+  --border-default: var(--color-ink-300);
+  --text-primary: var(--color-ink-900);
+  --text-secondary: var(--color-ink-600);
+  --text-tertiary: var(--color-ink-400);
+  --text-on-brand: #ffffff;
+}
+
+.dark {
+  --surface-canvas: var(--color-ink-950);
+  --surface-card: var(--color-ink-900);
+  --surface-card-hover: var(--color-ink-800);
+  --surface-sunken: var(--color-ink-950);
+  --surface-overlay: rgb(10 13 26 / 0.7);
+  --border-subtle: var(--color-ink-800);
+  --border-default: var(--color-ink-700);
+  --text-primary: var(--color-ink-50);
+  --text-secondary: var(--color-ink-300);
+  --text-tertiary: var(--color-ink-400);
+  --text-on-brand: #ffffff;
+  color-scheme: dark;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  background-color: var(--surface-canvas);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Visible keyboard focus everywhere — accessibility floor */
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Thin, quiet scrollbars for dense tables/sidebars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background-color: var(--border-default); border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Signature motif: a folder-tab notch on the top-left of elevated cards,
+   used sparingly on primary content cards to tie the UI back to "documents". */
+.folder-tab {
+  position: relative;
+}
+.folder-tab::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 20px;
+  width: 34px;
+  height: 6px;
+  border-radius: 6px 6px 0 0;
+  background: var(--tab-color, var(--color-brand-500));
+}
