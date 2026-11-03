@@ -20,7 +20,7 @@
 // with no .env file keeps working exactly as it did.
 export const API_BASE_URL =
   (typeof import.meta !== "undefined" && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
-  "http://localhost:3000/api";
+  "https://evault-api.excelligent.co.in/api";
 
 const TOKEN_STORAGE_KEY = "accessToken";
 
