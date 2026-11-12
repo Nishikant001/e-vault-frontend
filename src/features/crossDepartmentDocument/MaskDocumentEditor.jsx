@@ -29,12 +29,7 @@
 //    the user never touched never appear in the payload, so the
 //    backend never touches them.
 
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorkerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
@@ -47,23 +42,15 @@ const domDocument = globalThis.document;
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
 
-
 const DEFAULT_COLOR = "#000000";
 const DEFAULT_STROKE_WIDTH = 12;
 const MAX_PAGE_WIDTH = 900;
 const THUMBNAIL_WIDTH = 96;
 const MIN_BOX_SIZE = 0.004; // ignore accidental taps/clicks
 
-
 function getShareId(share) {
-  return (
-    share?.shareId ||
-    share?.id ||
-    share?.temporaryShareId ||
-    null
-  );
+  return share?.shareId || share?.id || share?.temporaryShareId || null;
 }
-
 
 function getDocumentName(document, share) {
   return (
@@ -78,16 +65,13 @@ function getDocumentName(document, share) {
   );
 }
 
-
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
-
 function makeId() {
   return `mask_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 }
-
 
 /*
  * Convert a browser pointer position into normalized coordinates
@@ -107,14 +91,12 @@ function getNormalizedPoint(event, element) {
   };
 }
 
-
 function getDisplayPoint(point, width, height) {
   return {
     x: point.x * width,
     y: point.y * height,
   };
 }
-
 
 export default function MaskDocumentEditor({
   request,
@@ -178,9 +160,7 @@ export default function MaskDocumentEditor({
   const [error, setError] = useState("");
   const [confirming, setConfirming] = useState(false);
 
-
   const shareId = getShareId(share);
-
 
   // ==========================================================
   // DETECT PREVIEW TYPE
@@ -189,7 +169,6 @@ export default function MaskDocumentEditor({
   const resolvedPreviewType =
     previewType ||
     (previewUrl && /\.pdf(?:\?|$)/i.test(previewUrl) ? "pdf" : "image");
-
 
   // ==========================================================
   // LOAD PDF DOCUMENT (pdfjs)
@@ -244,7 +223,6 @@ export default function MaskDocumentEditor({
     };
   }, [previewUrl, resolvedPreviewType]);
 
-
   // ==========================================================
   // GENERATE PAGE THUMBNAILS (PDF only)
   // ==========================================================
@@ -294,7 +272,6 @@ export default function MaskDocumentEditor({
     };
   }, [numPages, resolvedPreviewType]);
 
-
   // ==========================================================
   // REDRAW ALL MASKS FOR THE CURRENT PAGE
   // ==========================================================
@@ -314,19 +291,18 @@ export default function MaskDocumentEditor({
       .forEach((mask) => drawMask(context, canvas, mask));
   }, [masks, currentPage]);
 
-
   function drawMask(context, canvas, mask) {
     if (mask.type === "rect") {
       const topLeft = getDisplayPoint(
         { x: mask.x, y: mask.y },
         canvas.width,
-        canvas.height
+        canvas.height,
       );
 
       const size = getDisplayPoint(
         { x: mask.width, y: mask.height },
         canvas.width,
-        canvas.height
+        canvas.height,
       );
 
       context.save();
@@ -350,7 +326,7 @@ export default function MaskDocumentEditor({
     const firstPoint = getDisplayPoint(
       mask.points[0],
       canvas.width,
-      canvas.height
+      canvas.height,
     );
     context.moveTo(firstPoint.x, firstPoint.y);
 
@@ -363,11 +339,9 @@ export default function MaskDocumentEditor({
     context.restore();
   }
 
-
   useEffect(() => {
     redrawCanvas();
   }, [redrawCanvas]);
-
 
   // ==========================================================
   // RENDER CURRENT PDF PAGE INTO pageCanvasRef + SIZE maskCanvasRef
@@ -426,11 +400,11 @@ export default function MaskDocumentEditor({
     }
   }, [currentPage, resolvedPreviewType, redrawCanvas]);
 
-
   useEffect(() => {
-    renderCurrentPage();
-  }, [renderCurrentPage]);
+    if (pdfLoading || !pdfDocRef.current) return;
 
+    renderCurrentPage();
+  }, [renderCurrentPage, pdfLoading, numPages]);
 
   useEffect(() => {
     const container = stageWrapperRef.current;
@@ -443,7 +417,6 @@ export default function MaskDocumentEditor({
 
     return () => observer.disconnect();
   }, [renderCurrentPage]);
-
 
   // ==========================================================
   // SIZE THE MASK CANVAS FOR IMAGE PREVIEWS
@@ -470,7 +443,6 @@ export default function MaskDocumentEditor({
     redrawCanvas();
   }, [resolvedPreviewType, redrawCanvas]);
 
-
   useEffect(() => {
     if (resolvedPreviewType === "pdf") return undefined;
 
@@ -479,7 +451,6 @@ export default function MaskDocumentEditor({
     window.addEventListener("resize", syncImageCanvasSize);
     return () => window.removeEventListener("resize", syncImageCanvasSize);
   }, [resolvedPreviewType, syncImageCanvasSize]);
-
 
   // ==========================================================
   // LIVE PREVIEW WHILE DRAWING
@@ -500,7 +471,11 @@ export default function MaskDocumentEditor({
       const height = Math.abs(box.end.y - box.start.y);
 
       const topLeft = getDisplayPoint({ x, y }, canvas.width, canvas.height);
-      const size = getDisplayPoint({ x: width, y: height }, canvas.width, canvas.height);
+      const size = getDisplayPoint(
+        { x: width, y: height },
+        canvas.width,
+        canvas.height,
+      );
 
       context.save();
       context.globalAlpha = 0.55;
@@ -518,7 +493,6 @@ export default function MaskDocumentEditor({
       drawMask(context, canvas, currentStrokeRef.current);
     }
   };
-
 
   // ==========================================================
   // POINTER HANDLERS
@@ -556,7 +530,6 @@ export default function MaskDocumentEditor({
     canvas.setPointerCapture?.(event.pointerId);
   };
 
-
   const handlePointerMove = (event) => {
     if (!drawingRef.current) return;
 
@@ -578,7 +551,6 @@ export default function MaskDocumentEditor({
 
     drawLivePreview();
   };
-
 
   const finishStroke = (event) => {
     if (!drawingRef.current) return;
@@ -633,16 +605,15 @@ export default function MaskDocumentEditor({
     }
   };
 
-
   // ==========================================================
   // UNDO / CLEAR / RESET (scoped to the page you're looking at,
   // so undo never silently removes a mask from a different page)
   // ==========================================================
 
   const masksOnCurrentPage = masks.filter((mask) => mask.page === currentPage);
-  const pagesWithMasks = Array.from(new Set(masks.map((mask) => mask.page))).sort(
-    (a, b) => a - b
-  );
+  const pagesWithMasks = Array.from(
+    new Set(masks.map((mask) => mask.page)),
+  ).sort((a, b) => a - b);
 
   const handleUndo = () => {
     if (confirming) return;
@@ -662,7 +633,9 @@ export default function MaskDocumentEditor({
   const handleClearPage = () => {
     if (confirming) return;
 
-    setMasks((previous) => previous.filter((mask) => mask.page !== currentPage));
+    setMasks((previous) =>
+      previous.filter((mask) => mask.page !== currentPage),
+    );
     currentStrokeRef.current = null;
     currentBoxRef.current = null;
     drawingRef.current = false;
@@ -685,7 +658,6 @@ export default function MaskDocumentEditor({
     if (pageNumber < 1 || pageNumber > numPages) return;
     setCurrentPage(pageNumber);
   };
-
 
   // ==========================================================
   // CONFIRM MASKS
@@ -736,17 +708,15 @@ export default function MaskDocumentEditor({
           err?.response?.data?.message ||
           err?.response?.data?.error ||
           err?.message ||
-          "Failed to confirm document masking."
+          "Failed to confirm document masking.",
       );
     } finally {
       setConfirming(false);
     }
   };
 
-
   return (
     <div className="w-full space-y-6">
-
       {/* HEADER */}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -755,8 +725,8 @@ export default function MaskDocumentEditor({
             Mask Document
           </h2>
           <p className="mt-1 text-sm leading-6 text-gray-500 dark:text-gray-400">
-            Draw or box over sensitive information before sending the
-            temporary shared copy.
+            Draw or box over sensitive information before sending the temporary
+            shared copy.
           </p>
         </div>
 
@@ -764,7 +734,6 @@ export default function MaskDocumentEditor({
           {getDocumentName(document, share)}
         </div>
       </div>
-
 
       {/* ERROR */}
 
@@ -777,25 +746,21 @@ export default function MaskDocumentEditor({
         </div>
       )}
 
-
       {/* SECURITY MESSAGE */}
 
       <div className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-4 text-sm leading-6 text-blue-800 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-200">
         <p className="font-semibold">Original document protection</p>
         <p className="mt-1">
-          Masking applies only to the temporary shared copy. The
-          original DMS document will not be modified.
+          Masking applies only to the temporary shared copy. The original DMS
+          document will not be modified.
         </p>
       </div>
-
 
       {/* TOOLBAR */}
 
       <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-
           <div className="flex flex-wrap items-end gap-4">
-
             {/* TOOL SELECTOR */}
 
             <div>
@@ -874,7 +839,9 @@ export default function MaskDocumentEditor({
                   step="1"
                   value={strokeWidth}
                   disabled={confirming}
-                  onChange={(event) => setStrokeWidth(Number(event.target.value))}
+                  onChange={(event) =>
+                    setStrokeWidth(Number(event.target.value))
+                  }
                   className="w-full"
                 />
               </div>
@@ -912,11 +879,9 @@ export default function MaskDocumentEditor({
         </div>
       </div>
 
-
       {/* PREVIEW */}
 
       <div className="rounded-xl border border-gray-200 bg-gray-100 p-4 shadow-sm dark:border-gray-700 dark:bg-gray-950">
-
         {!previewUrl && (
           <div className="flex min-h-96 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-400">
             Temporary document preview is not available.
@@ -925,7 +890,6 @@ export default function MaskDocumentEditor({
 
         {previewUrl && (
           <div className="flex flex-col gap-4 md:flex-row">
-
             {/* PAGE THUMBNAIL RAIL (PDF, multi-page only) */}
 
             {resolvedPreviewType === "pdf" && numPages > 1 && (
@@ -933,7 +897,9 @@ export default function MaskDocumentEditor({
                 {Array.from({ length: numPages }).map((_, index) => {
                   const pageNumber = index + 1;
                   const thumb = thumbnails[index];
-                  const hasMask = masks.some((mask) => mask.page === pageNumber);
+                  const hasMask = masks.some(
+                    (mask) => mask.page === pageNumber,
+                  );
 
                   return (
                     <button
@@ -978,7 +944,6 @@ export default function MaskDocumentEditor({
             {/* MAIN STAGE */}
 
             <div className="flex-1">
-
               {resolvedPreviewType === "pdf" && numPages > 1 && (
                 <div className="mb-3 flex items-center justify-center gap-3">
                   <button
@@ -1008,7 +973,6 @@ export default function MaskDocumentEditor({
                 className="relative mx-auto flex items-center justify-center overflow-auto rounded-lg bg-white shadow-sm"
                 style={{ minHeight: "50vh" }}
               >
-
                 {resolvedPreviewType === "pdf" && pdfLoading && (
                   <div className="flex min-h-96 w-full items-center justify-center text-sm text-gray-500 dark:text-gray-400">
                     Loading document...
@@ -1063,7 +1027,6 @@ export default function MaskDocumentEditor({
         )}
       </div>
 
-
       {/* MASK COUNT */}
 
       <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -1074,7 +1037,6 @@ export default function MaskDocumentEditor({
         {pagesWithMasks.length > 0 &&
           `across page${pagesWithMasks.length > 1 ? "s" : ""} ${pagesWithMasks.join(", ")}`}
       </p>
-
 
       {/* ACTIONS */}
 
@@ -1099,7 +1061,6 @@ export default function MaskDocumentEditor({
           {confirming ? "Confirming..." : "Preview Masked Copy"}
         </button>
       </div>
-
     </div>
   );
 }

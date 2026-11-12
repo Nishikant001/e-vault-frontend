@@ -39,7 +39,7 @@ function DocumentViewer({ docId, fallback, mimeType, fileType }) {
     setFailed(false);
     setLoading(true);
 
-    fetch(`${API}/documents/${docId}/download`, { headers: authHeaders() })
+    fetch(`${API}/documents/${docId}/view`, { headers: authHeaders() })
       .then((res) => {
         if (!res.ok) throw new Error("Unable to load document");
         const type = res.headers.get("content-type") || mimeType || fileType || "";
